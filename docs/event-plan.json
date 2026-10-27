@@ -1,0 +1,102 @@
+{
+  "product": "voice-demo",
+  "page": {
+    "id": "home",
+    "event": "page_view",
+    "event_id": "voice.page.view"
+  },
+  "components": [
+    {
+      "id": "transcript_tab",
+      "name": "转写 Tab",
+      "selector": "#transcript-tab",
+      "event": "click",
+      "event_id": "voice.transcript.open"
+    },
+    {
+      "id": "summary_tab",
+      "name": "摘要 Tab",
+      "selector": "#summary-tab",
+      "event": "click",
+      "event_id": "voice.summary.open"
+    },
+    {
+      "id": "recognition_toggle",
+      "name": "识别按钮",
+      "selector": "#recognize",
+      "event": "click",
+      "transitions": {
+        "attribute": "aria-pressed",
+        "events": [
+          {
+            "from": "false",
+            "to": "true",
+            "id": "recognition_start",
+            "name": "启动识别",
+            "event_id": "voice.recognition.start"
+          },
+          {
+            "from": "true",
+            "to": "false",
+            "id": "recognition_stop",
+            "name": "关闭识别",
+            "event_id": "voice.recognition.stop"
+          }
+        ]
+      }
+    },
+    {
+      "id": "content_save",
+      "name": "保存",
+      "selector": "#save-content",
+      "event": "click",
+      "event_id": "voice.content.save"
+    }
+  ],
+  "lifecycle_events": [
+    {
+      "id": "voice.recognition.end",
+      "name": "识别结束",
+      "fields": [
+        "recognition_id",
+        "started_at",
+        "ended_at",
+        "duration_ms",
+        "end_reason"
+      ],
+      "reasons": [
+        "manual",
+        "exit"
+      ]
+    },
+    {
+      "id": "voice.recognition.active",
+      "name": "识别活动确认",
+      "purpose": "确认仍在进行，不计入点击次数"
+    },
+    {
+      "id": "voice.session.end",
+      "name": "轨迹结束",
+      "fields": [
+        "trajectory_id",
+        "trajectory_seq",
+        "started_at",
+        "ended_at",
+        "duration_ms",
+        "end_reason"
+      ]
+    },
+    {
+      "id": "voice.session.active",
+      "name": "轨迹活动确认",
+      "purpose": "判断未结束轨迹仍在线，不计点击或路径节点"
+    }
+  ],
+  "trajectory": {
+    "id_field": "trajectory_id",
+    "entry_event": "voice.page.view",
+    "order_field": "trajectory_seq",
+    "boundary": "每次页面加载/刷新独立，后台不拆分；正常退出结束，缺退出标未确认",
+    "step_count": "实际click事件数；不含进入、退出、活动确认及系统识别结算"
+  }
+}
